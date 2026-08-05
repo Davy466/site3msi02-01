@@ -40,6 +40,8 @@ body {
     font-family: var(--font-main);
     line-height: 1.5;
     min-height: 100vh;
+    /* Evita que a barra do celular corte o final do site */
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Loading Screen */
@@ -143,7 +145,16 @@ body {
 }
 
 /* Dashboard Grid */
-.dashboard-container { padding: 2rem; max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+.dashboard-container { 
+    padding: 2rem; 
+    max-width: 1400px; 
+    margin: 0 auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 2rem; 
+    /* Margem no fundo garante que as coisas não fiquem presas debaixo da tela no celular */
+    padding-bottom: 5rem;
+}
 section h2 { 
     font-size: 1.1rem; 
     color: var(--text-secondary); 
@@ -247,7 +258,7 @@ section h2::before {
 .led.red.active { background-color: var(--color-danger); box-shadow: 0 0 15px var(--color-danger); }
 .buzzer { font-size: 1.2rem; }
 
-.alert-list { list-style: none; max-height: 200px; overflow-y: auto; }
+.alert-list { list-style: none; max-height: 250px; overflow-y: auto; scroll-behavior: smooth; }
 .alert-item { 
     padding: 10px; 
     border-left: 3px solid #334155; 
@@ -271,7 +282,7 @@ section h2::before {
 }
 .header-with-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .btn-small { padding: 6px 12px; font-size: 0.8rem; }
-.table-responsive { overflow-x: auto; max-height: 300px; }
+.table-responsive { overflow-x: auto; max-height: 350px; scroll-behavior: smooth; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th, td { padding: 12px; border-bottom: 1px solid rgba(139, 92, 246, 0.15); font-size: 0.9rem; }
 th { color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
@@ -284,28 +295,24 @@ tr:hover td { background: rgba(139, 92, 246, 0.05); }
 ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
 
-/* Responsividade */
 /* =========================================
    Responsividade & Mobile (Telas Menores)
    ========================================= */
 
 @media (max-width: 992px) {
-    /* Em tablets, empilha os painéis lado a lado para cima e para baixo */
     .split-layout, .bottom-modules { grid-template-columns: 1fr; gap: 1.5rem; }
     .top-header { flex-direction: column; gap: 15px; text-align: center; }
 }
 
 @media (max-width: 768px) {
-    /* Em celulares deitados ou telas médias */
-    .dashboard-container { padding: 1rem; gap: 1.5rem; }
+    .dashboard-container { padding: 1rem; gap: 1.5rem; padding-bottom: 4rem; }
     .connection-panel { flex-direction: column; gap: 1rem; width: 100%; }
-    .connection-panel .btn { width: 100%; } /* Botão de conectar ocupa a largura toda */
+    .connection-panel .btn { width: 100%; } 
     .status-indicators { width: 100%; justify-content: center; flex-wrap: wrap; }
     .chart-container { height: 300px; }
 }
 
 @media (max-width: 480px) {
-    /* Em celulares em pé (telas pequenas) */
     .top-header { padding: 1rem; }
     .logo h1 { font-size: 1.3rem; }
     
@@ -322,5 +329,5 @@ tr:hover td { background: rgba(139, 92, 246, 0.05); }
     
     .loader-content h1 { font-size: 1.8rem; }
     
-    .test-buttons { grid-template-columns: 1fr; } /* Botões de teste ficam um embaixo do outro */
+    .test-buttons { grid-template-columns: 1fr; }
 }
