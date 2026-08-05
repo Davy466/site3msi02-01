@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamilton SafeHouse - Monitoramento</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <h1>HAMILTON SAFEHOUSE</h1>
+            <p>Intelligent Residential Safety & Monitoring</p>
+        </div>
+    </div>
+
+    <header class="top-header">
+        <div class="logo">
+            <h1>HAMILTON SAFEHOUSE</h1>
+            <span>Sistema Inteligente de Segurança e Economia Residencial</span>
+        </div>
+        
+        <div class="connection-panel">
+            <div class="status-indicators">
+                <span id="demo-badge" class="badge demo hidden">🟣 MODO DEMONSTRAÇÃO</span>
+                <span id="ble-status-text" class="status-text">🔴 Desconectado</span>
+            </div>
+            <div class="buttons">
+                <button id="btn-demo" class="btn btn-secondary">Ativar Demonstração</button>
+                <button id="btn-connect" class="btn btn-primary">Conectar ao ESP32</button>
+                <button id="btn-disconnect" class="btn btn-danger hidden">Desconectar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="security-module">
+            <h2>Segurança Residencial</h2>
+            <div id="home-status" class="status-card normal">
+                <span class="status-icon">🟢</span>
+                <h3 id="home-status-text">NORMAL</h3>
+            </div>
+        </section>
+
+       <section class="overview-module">
+            <h2>Visão Geral</h2>
+            <div class="cards-grid">
+                
+                <div class="card" id="card-temp">
+                    <div class="card-header">🌡️ Temperatura</div>
+                    <div class="card-value"><span id="val-temp">--</span> °C</div>
+                    <div class="card-status" id="status-temp">Aguardando dados...</div>
+                </div>
+                
+                <div class="card" id="card-hum">
+                    <div class="card-header">💧 Umidade</div>
+                    <div class="card-value"><span id="val-hum">--</span> %</div>
+                    <div class="card-status" id="status-hum">Aguardando dados...</div>
+                </div>
+
+                <div class="card" id="card-flow">
+                    <div class="card-header">💧 Fluxo de água</div>
+                    <div class="card-value"><span id="val-flow">--</span> L/min</div>
+                </div>
+
+                <div class="card" id="card-water-total">
+                    <div class="card-header">🚰 Consumo de água</div>
+                    <div class="card-value"><span id="val-water-total">--</span> L</div>
+                    <div class="card-status">Sessão atual</div>
+                </div>
+
+                <div class="card highlight" id="card-flame">
+                    <div class="card-header">🔥 Detecção de Chama</div>
+                    <div class="card-value text-small" id="val-flame">Nenhuma chama detectada</div>
+                </div>
+
+                <div class="card" id="card-voltage">
+                    <div class="card-header">⚡ Tensão</div>
+                    <div class="card-value"><span id="val-voltage">--</span> V</div>
+                </div>
+
+                <div class="card" id="card-current">
+                    <div class="card-header">🔌 Corrente</div>
+                    <div class="card-value"><span id="val-current">--</span> A</div>
+                </div>
+
+                <div class="card" id="card-power">
+                    <div class="card-header">🔋 Potência</div>
+                    <div class="card-value"><span id="val-power">--</span> W</div>
+                </div>
+
+                <div class="card" id="card-energy-total">
+                    <div class="card-header">📊 Energia</div>
+                    <div class="card-value"><span id="val-energy">--</span> kWh</div>
+                    <div class="card-status">Sessão atual</div>
+                </div>
+                </div>
+        </section>
+
+        <div class="split-layout">
+            <section class="charts-module">
+                <h2>Monitoramento em Tempo Real</h2>
+                <div class="chart-container">
+                    <canvas id="sensorChart"></canvas>
+                </div>
+            </section>
+
+            <div class="side-modules">
+                <section class="physical-signals">
+                    <h2>Sinalização Física (Atuadores)</h2>
+                    <ul class="signal-list">
+                        <li><span class="led green" id="led-green"></span> LED Verde (Normal)</li>
+                        <li><span class="led yellow" id="led-yellow"></span> LED Amarelo (Atenção)</li>
+                        <li><span class="led red" id="led-red"></span> LED Vermelho (Perigo)</li>
+                        <li><span class="buzzer" id="buzzer-status">🔇 Inativo</span> Buzzer (Alarme)</li>
+                    </ul>
+                </section>
+
+                <section class="alerts-module">
+                    <h2>Central de Alertas</h2>
+                    <ul id="alert-list" class="alert-list">
+                        <li class="alert-item info">Sistema inicializado. Aguardando conexão.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+
+        <section class="bottom-modules">
+            <div class="history-module">
+                <div class="header-with-action">
+                    <h2>Histórico da Sessão</h2>
+                    <button id="btn-clear-history" class="btn btn-small">Limpar</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th>Temp (°C)</th>
+                                <th>Umid (%)</th>
+                                <th>Fluxo (L/min)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="test-module">
+                <h2>Teste do Sistema</h2>
+                <p class="help-text">Envie comandos via BLE para os atuadores físicos.</p>
+                <div class="test-buttons">
+                    <button class="btn btn-outline" onclick="app.sendTestCommand('TEST_GREEN_LED')">LED Verde</button>
+                    <button class="btn btn-outline" onclick="app.sendTestCommand('TEST_YELLOW_LED')">LED Amarelo</button>
+                    <button class="btn btn-outline" onclick="app.sendTestCommand('TEST_RED_LED')">LED Vermelho</button>
+                    <button class="btn btn-outline" onclick="app.sendTestCommand('TEST_BUZZER')">Buzzer</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/ble.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
